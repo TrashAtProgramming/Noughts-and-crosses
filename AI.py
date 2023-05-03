@@ -38,7 +38,7 @@ def bot_move():
         for j in range(len(board[i])):
             if board[i][j] == n:
                 board[i][j] = bot
-                score = minimax(board, False)
+                score = minimax(board, False, -1000, +1000)
                 board[i][j] = n
                 if score > best_score:
                     best_score = score
@@ -48,7 +48,7 @@ def bot_move():
     board[best_i][best_j] = bot
 
 
-def minimax(board, is_max,):
+def minimax(board, is_max, alpha, beta):
     global count
     count += 1
     if check_win(bot):
@@ -58,26 +58,34 @@ def minimax(board, is_max,):
     elif check_draw():
         return 0
     if is_max:
-        best_score = -800
+        best_score = -1000
         for i in range(len(board)):
             for j in range(len(board[i])):
                 if board[i][j] == n:
                     board[i][j] = bot
-                    score = minimax(board, False)
+                    score = minimax(board, False, alpha, beta)
                     board[i][j] = n
-                    if score > best_score:
-                        best_score = score
+                    best_score = max(best_score, score)
+                    alpha = max(alpha, best_score)
+                    if alpha >= beta:
+                        break
+            if alpha >= beta:
+                break
         return best_score
     else:
-        best_score = 800
+        best_score = 1000
         for i in range(len(board)):
             for j in range(len(board[i])):
                 if board[i][j] == n:
                     board[i][j] = player
-                    score = minimax(board, True)
+                    score = minimax(board, True, alpha, beta)
                     board[i][j] = n
-                    if score < best_score:
-                        best_score = score
+                    best_score = min(best_score, score)
+                    beta = min(beta, best_score)
+                    if alpha >= beta:
+                        break
+            if alpha >= beta:
+                break
         return best_score
 
 
